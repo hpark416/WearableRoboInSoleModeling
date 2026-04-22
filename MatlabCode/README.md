@@ -1,24 +1,42 @@
-# Matlab Code
+# MatlabCode
 
-This folder contains MATLAB and Simulink code for modeling and evaluating wearable insole design effects on running dynamics.
+This folder contains the MATLAB/Simulink implementation for the wearable insole modeling study, including baseline and modified hopper models, parameter-sweep scripts, generated `.mat` data, and colormap figures.
 
-## Intended Contents
+## Current Folder Structure
 
-- simulation scripts (`.m`) for parameter sweeps and post-processing,
-- model files (`.slx`) for hopper-based or derived locomotion simulations,
-- helper functions for force-displacement, stiffness, and damping formulations.
+- `FullHopper_alt.slx`: modified Simulink hopper model with shoe parameters.
+- `gen_data.m`: runs simulation sweeps and saves outputs to `generated_data/`.
+- `gen_figures.m`: loads sweep outputs and generates contour heatmaps.
+- `performance_eval.m`: preliminary 1D evaluation script for stiffness and max compression.
+- `original/FullHopper_baseline.slx`: baseline model used for comparison.
+- `generated_data/`: saved simulation outputs (`baseline.mat` and sweep `.mat` files).
+- `generated_data/figures/`: generated heatmaps.
 
-## Suggested Organization
+## Parameter Sweep Data
 
-- `models/`: Simulink models and variants.
-- `scripts/`: runnable experiment scripts.
-- `functions/`: reusable utility functions.
-- `outputs/`: optional intermediate data files (if kept in-repo).
+`gen_data.m` currently sweeps:
 
-## Project Context
+- `K_shoe` from `20000` to `70000` N/m (step `2500`),
+- `thickness` (used as max compression) from `0.01` to `0.035` m (step `0.0025`).
 
-Code in this folder should align with the proposal goals:
+The dataset in `generated_data/` currently includes:
 
-- compare sole stiffness assumptions (spring / spring-damper formulations),
-- evaluate effects on GRF-related behavior and energetic proxies,
-- support scenario comparisons across demographic and environment parameters.
+- `baseline.mat` (baseline simulation output),
+- 231 sweep outputs named like `k_<stiffness>_maxcomp_<value>.mat`,
+- 232 `.mat` files total in the folder.
+
+## Generated Figures
+
+`gen_figures.m` produces contour maps in `generated_data/figures/`:
+
+- `GRF_colormap.png`
+- `mean_Pmet_colormap.png`
+- `dpMass_colormap.png`
+
+These summarize how peak GRF, mean metabolic proxy (`mean_Pmet`), and peak mass displacement vary across the 2D parameter grid.
+
+## Typical Workflow
+
+1. Run `gen_data.m` to generate or refresh sweep data.
+2. Run `gen_figures.m` to regenerate heatmaps from saved `.mat` files.
+3. Use `performance_eval.m` for quick 1D exploratory checks of stiffness or max compression trends.
