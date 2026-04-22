@@ -1,0 +1,8 @@
+*.mat
+*.asv
+*.*mex*
+
+GeneratedFigures/
+*.png
+*.csv
+*.zip

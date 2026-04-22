@@ -2,6 +2,11 @@
 
 This repository contains a course project investigating optimal shoe sole and insole design for running performance and impact mitigation.
 
+## Matlab Toolbox dependencies
+This repository is developed with MATLAB/Simulink 2020a. Additional toolboxes are: 
+- Statistics and Machine Learning Toolbox (for Bayesian Optimization)
+- Parallel Computing Toolbox (to speed up simulation, but not implemented yet)
+
 ## Project Focus
 
 Based on the proposal in `Project Proposal/Wearable_Robotics_Project_Report.pdf`, the project explores:
