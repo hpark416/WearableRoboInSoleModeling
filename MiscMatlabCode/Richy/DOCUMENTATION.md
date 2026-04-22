@@ -125,6 +125,62 @@ In `metabolicVsStiffness.m`:
 
 This produces a positive mechanical-work proxy (in Joule-like units) used to compare stiffness settings.
 
+## Note on Metabolic Cost Estimation
+
+The scripts `metabolicVsStiffness.m` and `metaCostStiffness2.m` estimate energetic expenditure using a mechanical proxy, rather than a full physiological metabolic model.
+
+### Method Overview
+
+Metabolic cost is approximated from muscle-tendon unit (MTU) mechanical power:
+
+- `P_MTU(t) = F_mt(t) * dL_MT_rate(t)`
+
+Only positive mechanical power is counted:
+
+- `P_plus(t) = max(P_MTU(t), 0)`
+
+The energetic proxy is:
+
+- `E_proxy = integral(P_plus(t) dt)`
+
+In `metaCostStiffness2.m`, this quantity is:
+
+- computed per hop cycle,
+- averaged over multiple steady-state cycles,
+- used to identify the stiffness that minimizes energetic cost.
+
+### Interpretation
+
+This proxy represents positive MTU work, which is a major contributor to locomotion energy demand.
+
+Lower values suggest:
+
+- less mechanical work required from muscle action,
+- potentially improved energetic efficiency.
+
+### Limitations
+
+This method is not a full metabolic-energy model. It does not explicitly include:
+
+- activation and deactivation energetic costs,
+- force-maintenance (isometric) energy consumption,
+- different efficiencies for shortening versus lengthening contractions,
+- explicit separation of muscle-fiber and tendon energetics.
+
+Also, MTU power includes elastic tendon contributions, which do not map one-to-one to direct metabolic energy consumption.
+
+### Justification
+
+Despite these limitations, positive MTU work is commonly used in simplified studies because it:
+
+- captures key trends in energetic demand,
+- is computationally efficient,
+- supports consistent comparisons across design parameters such as shoe stiffness.
+
+### Conclusion
+
+Results should be interpreted as relative changes in energetic demand, not absolute metabolic energy expenditure. A more physiologically accurate estimate would require explicit muscle energetics (for example activation dynamics and heat-production terms).
+
 ## Cycle-Averaged Optimization Method
 
 In `metaCostStiffness2.m`:
