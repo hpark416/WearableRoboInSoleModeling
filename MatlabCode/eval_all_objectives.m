@@ -15,15 +15,19 @@ function [max_GRF, max_dpMass, mean_Pmet] = ...
 
     % will not save anything.
     % we can run different slices, each varying one parameter, as sanity check
-    set_param(strcat(model_name,'/LoadDynamics/k_shoe'),'Value',...
-        num2str(params.K_shoe));
-    set_param(strcat(model_name,'/LoadDynamics/thickness'),'Value',...
-        num2str(params.thickness));
 
-    simout = sim(model_name);     
-    [max_GRF, max_dpMass, mean_Pmet] = analyze_sole_output(simout);
+    % better practice?
+    simIn = Simulink.SimulationInput(model_name);
+    % probably should not use set_param. use set variable (matlab
+    % workspace) instead, or might need to recomplie
+    simIn = simIn.setVariable('k_shoe', params.K_shoe, ...
+        'Workspace', model_name);
+    simIn = simIn.setVariable('thickness', params.thickness,...
+        'Workspace', model_name);
+%     simIn = simIn.setModelParameter('SimulationMode', "accelerator");
+    simOut = sim(simIn);
+    [max_GRF, max_dpMass, mean_Pmet] = analyze_sole_output(simOut);
 end
-
 
 
 %% helpers

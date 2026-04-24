@@ -1,6 +1,10 @@
 *.mat
+*.m~
 *.asv
 *.*mex*
+# simulink cache, might include compiled rapid accelerator code
+*.slxc
+slprj/
 
 GeneratedFigures/
 *.png
