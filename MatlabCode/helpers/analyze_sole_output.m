@@ -1,5 +1,7 @@
+%% calculates objectives from simulation output
+% extracts the last 2 cycles to analyze, with a hard-coded T_stim=0.4
 function [max_GRF, max_dpMass, mean_Pmet] = analyze_sole_output(simout)
-
+% T_stim is hard coded as 0.4 here!
 max_GRFs = [];
 max_dpMasses = [];
 for cycle_idx = 0:2
@@ -22,16 +24,15 @@ mean_Pmet = Int_mean_Pmet_end(end) - Int_mean_Pmet_start(1);
 end
 
 
-% extract the last cycle for now and calculate the peak dp_Mass and GRF
+%% extract the (n-cycle_idx)th cycle and calculate the peak dp_Mass and GRF
+% To avoid writing a function to find several peaks.
 function [sig_trimmed, t_start, t_end] = ...
     extract_cycle_from_end(timeseries, T_stim, cycle_idx)
-% extracts the (n-cycle_idx)th cycle. To avoid writing a function to find
-% several peaks.
 
 sig = timeseries.Data;
 t = timeseries.Time;
 sim_time = t(end);
-% extract the final 4 full cycles 
+% extract the prescribed cycle 
 % determine time
 n_cycles = floor(sim_time/T_stim);
 t_end = T_stim*(n_cycles - cycle_idx);
@@ -39,10 +40,6 @@ t_end = T_stim*(n_cycles - cycle_idx);
 t_start = t_end - 1*T_stim;
 % extract segment
 t0 = t>= t_start & t <= t_end;
-
-% t_indices = find(t0);
-% t_start_idx = t_indices(1);
-% t_end_idx = t_indices(end);
 
 sig_trimmed = sig(t0);
 

@@ -1,3 +1,4 @@
+%% boilerplate code to initialize colormap figure.
 function fig = init_contourf(titlename)
 
 fig = figure("Units","inches", "Position",[1,1,6,5]);hold on;

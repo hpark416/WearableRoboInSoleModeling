@@ -1,17 +1,18 @@
+%% generated figures for data generated from gen_data.m
+% jump height is not fixed.
+
 clc;close all; clear
 folder_dir = "./generated_data/";
 image_folder_dir = strcat(folder_dir,"figures/");
 mkdir(image_folder_dir)
 
-%% baseline
-
+%% get baseline value
 d = load(strcat(folder_dir,"baseline.mat"));
 [max_GRF_baseline, max_dpMass_baseline, mean_Pmet_baseline] = analyze_sole_output(d.simout);
 
 
-%% Heatmap
-K_shoes = 20000:2500:70000;
-thicknesses = 0.01:0.0025:0.035; % not very interesting
+%% generate Heatmap data
+[K_shoes, thicknesses, ~] =  load_params();
 
 max_GRFs = zeros(length(K_shoes),length(thicknesses));
 max_dpMasses = zeros(length(K_shoes),length(thicknesses));
@@ -38,59 +39,30 @@ for K_shoe_idx = 1:length(K_shoes)
     end
 end
 
-%%
+[X,Y] = meshgrid(K_shoes,thicknesses);
 
-[X,Y] = meshgrid(K_shoes,thicknesses); % true frequency
-
-fig = figure("Units","inches", "Position",[1,1,6,5]);hold on;
-ax = gca;
-ax.FontSize = 12;
-ax.FontName = "Times New Roman"; 
-
+%% Plot GRF
+titlename = strcat("max GRF, baseline = ", ...
+            num2str(max_GRF_baseline), "N");
+                
+fig = init_contourf(titlename);
 contourf(X,Y,max_GRFs')
-title(strcat("max GRF, baseline = ", num2str(max_GRF_baseline), "N"),...
-    'Interpreter', 'latex',"FontSize",15)
-xlabel("K_{shoe}(N/m)")
-ylabel("max compression (m)")
-
-
-colorbar
 
 saveas(fig,strcat(image_folder_dir,"GRF_colormap.png"))
 
-
-%%
-
-fig = figure("Units","inches", "Position",[1,1,6,5]);hold on;
-ax = gca;
-ax.FontSize = 12;
-ax.FontName = "Times New Roman"; 
-
+%% Plot Pmet
+titlename = strcat("$\bar P_{met}$, baseline = ", ...
+                    num2str(mean_Pmet_baseline));
+fig = init_contourf(titlename);
 contourf(X,Y,mean_Pmets')
-title(strcat("$\bar P_{met}$, baseline = ", num2str(mean_Pmet_baseline)),...
-    'Interpreter', 'latex',"FontSize",15)
-xlabel("K_{shoe}(N/m)")
-ylabel("max compression (m)")
-
-
-colorbar
 
 saveas(fig,strcat(image_folder_dir,"mean_Pmet_colormap.png"))
 
-%%
-fig = figure("Units","inches", "Position",[1,1,6,5]);hold on;
-ax = gca;
-ax.FontSize = 12;
-ax.FontName = "Times New Roman"; 
-
+%% Plot dp_Mass
+titlename = strcat("max $dp_{Mass}$, baseline = ", ...
+                    num2str(max_dpMass_baseline), "m");
+fig = init_contourf(titlename);
 contourf(X,Y,max_dpMasses')
-title(strcat("max $dp_{Mass}$, baseline = ", num2str(max_dpMass_baseline), "m"),...
-    'Interpreter', 'latex',"FontSize",15)
-xlabel("K_{shoe}(N/m)")
-ylabel("max compression (m)")
-
-
-colorbar
 
 saveas(fig,strcat(image_folder_dir,"dpMass_colormap.png"))
 
