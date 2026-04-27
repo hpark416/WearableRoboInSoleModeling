@@ -1,3 +1,5 @@
+% TODO this file is not updated to run with newest functions
+
 % preliminary evaluation of piecewise linear force-displacement sole
 % sweeps through stiffness and maximum compression on 1D
 
@@ -22,7 +24,7 @@ warning(w)
 %% change stiffness first
 K_shoes = 10000:1000:50000;
 
-model_name = 'FullHopper_alt';
+model_name = 'models/FullHopper_alt';
 % model_filename = strcat('./',model_name,'.slx');
 w = warning('off','all');
 load_system(model_name);

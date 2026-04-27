@@ -1,6 +1,6 @@
 clc; close all; clear
 
-model_name = 'FullHopper_alt';
+model_name = 'models/FullHopper_alt';
 
 % the model must be loaded before running sim
 w = warning('off','all');

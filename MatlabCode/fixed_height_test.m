@@ -6,7 +6,7 @@ mkdir(folder_dir)
 addpath(genpath('./helpers'))
 
 %%
-model_name = 'FullHopper_alt';
+model_name = 'models/FullHopper_alt';
 w = warning('off','all');
 load_system(model_name);
 set_param(model_name, ...

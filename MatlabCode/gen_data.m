@@ -9,7 +9,7 @@ mkdir(folder_dir)
 addpath(genpath('./helpers'))
 
 %% record baseline value
-model_name = 'original/FullHopper_baseline';
+model_name = 'models/FullHopper_baseline';
 % model_filename = strcat('./',model_name,'.slx');
 w = warning('off','all');
 load_system(model_name);
@@ -30,7 +30,7 @@ T_stim = 0.4; % default value for now.
 
 %% actual simulation, preparation
 
-model_name = 'FullHopper_alt';
+model_name = 'models/FullHopper_alt';
 model_filename = strcat('./',model_name,'.slx');
 w = warning('off','all');
 load_system(model_name);
