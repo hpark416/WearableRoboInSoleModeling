@@ -6,9 +6,11 @@ mkdir(folder_dir)
 addpath(genpath('./helpers'))
 
 %%
-model_name = 'models/FullHopper_alt';
+model_name = 'FullHopper_alt';
+model_filename = strcat('./models/',model_name,'.slx');
+
 w = warning('off','all');
-load_system(model_name);
+load_system(model_filename);
 set_param(model_name, ...
     'SimulationMode', 'accelerator', ...
     'FastRestart', 'off');
@@ -37,24 +39,24 @@ T_stim_range = [min(T_stims), max(T_stims)];
 
 %% An example
 % change the following to see effects
-% K_shoe = 60000;
-% thickness = 0.03;
-% 
-% tic
-% [max_GRF, max_dpMass, mean_Pmet, T_stim_res] = ...
-%     eval_all_objectives(model_name, ...
-%     K_shoe, ...
-%     thickness, ...
-%     T_stim_range, des_dp_Mass);
-% toc
-% 
-% disp(max_GRF)
-% disp(mean_Pmet)
-% disp(max_dpMass)
+K_shoe = 60000;
+thickness = 0.03;
 
-% %% sanity check
-% [max_GRF_1, max_dpMass_1, mean_Pmet_1, T_stim_res_1] = ...
-%     eval_all_objectives(model_name, K_shoe, thickness, T_stim_res);
+tic
+[max_GRF, max_dpMass, mean_Pmet, T_stim_res] = ...
+    eval_all_objectives(model_name, ...
+    K_shoe, ...
+    thickness, ...
+    T_stim_range, des_dp_Mass);
+toc
+
+disp(max_GRF)
+disp(mean_Pmet)
+disp(max_dpMass)
+
+% sanity check
+[max_GRF_1, max_dpMass_1, mean_Pmet_1, T_stim_res_1] = ...
+    eval_all_objectives(model_name, K_shoe, thickness, T_stim_res);
 
 
 %% sweep in parfor

@@ -30,10 +30,15 @@ T_stim = 0.4; % default value for now.
 
 %% actual simulation, preparation
 
-model_name = 'models/FullHopper_alt';
-model_filename = strcat('./',model_name,'.slx');
+model_name = 'FullHopper_alt';
+model_filename = strcat('./models/',model_name,'.slx');
 w = warning('off','all');
-load_system(model_name);
+load_system(model_filename);
+% set_param(model_name, ...
+%     'SimulationMode', 'accelerator', ...
+%     'FastRestart', 'on');
+
+% should not be the path name
 set_param(model_name, ...
     'SimulationMode', 'accelerator', ...
     'FastRestart', 'on');

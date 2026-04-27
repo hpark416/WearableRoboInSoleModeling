@@ -1,10 +1,11 @@
 clc; close all; clear
 
-model_name = 'models/FullHopper_alt';
+model_name = 'FullHopper_alt';
+model_filename = strcat('./models/',model_name,'.slx');
 
 % the model must be loaded before running sim
 w = warning('off','all');
-load_system(model_name);
+load_system(model_filename);
 
 % do this outside the model. 
 % if the model structure changes, FastRestart will not work
