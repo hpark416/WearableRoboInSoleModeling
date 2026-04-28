@@ -6,8 +6,9 @@
 *.slxc
 slprj/
 
-GeneratedFigures/
 generated_data/
 *.png
 *.csv
 *.zip
+!DataForReport/
+!DataForReport/**
