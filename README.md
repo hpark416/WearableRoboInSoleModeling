@@ -21,7 +21,7 @@ The modeling approach is based on a hopper-style simulation framework intended t
 
 - `Project Proposal/`: Source proposal and planning documentation.
 - `PapersResearch/`: Literature notes and reference tracking.
-- `GeneratedFigures/`: Figures, plots, and visual outputs generated during analysis.
+- `DataForReport/`: Curated key figures, datasets, and assets used in reports and other project deliverables.
 
 ## Expected Outputs
 
