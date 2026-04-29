@@ -76,7 +76,7 @@ function [amplitude, max_GRF, max_dpMass, mean_Pmet] =  search_amplitude(...
         iters = varargin{2};
     end
 
-    if iters > 5
+    if iters > 10
         amplitude = mean(amplitude_range); 
         [max_GRF, max_dpMass, mean_Pmet] = ...
             eval_params(model_name, K_shoe, thickness, amplitude_range(2));

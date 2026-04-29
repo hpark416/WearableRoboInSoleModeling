@@ -15,5 +15,6 @@ function [K_shoes, thicknesses, des_dp_Mass] =  load_params()
     K_shoes = 20000:2500:55000;
     thicknesses = 0.005:0.0025:0.025; % maximum sole thickness is 4-5cm; 50% compressed
     % double feet
-    des_dp_Mass = 0.035;
+%     des_dp_Mass = 0.035;
+    des_dp_Mass = 0.04;
 end

@@ -4,12 +4,18 @@ clc; close all; clear
 %%
 folder_dir = "./generated_data/";
 mkdir(folder_dir)
+
 addpath(genpath('./helpers'))
 addpath(genpath('./models')) % or parfor cannot access
 
 %% load model
-model_name = 'FullHopper_alt';
+% model_name = 'FullHopper_alt';
+model_name = 'Copy_of_FullHopper_alt'; 
+
 model_filename = strcat('./models/',model_name,'.slx');
+
+model_experiment_folder_dir = strcat(folder_dir,"/",model_name,"/");
+mkdir(model_experiment_folder_dir)
 
 w = warning('off','all');
 load_system(model_filename);
@@ -28,12 +34,13 @@ set_param(model_name, ...
 
 %% load parameters
 [K_shoes, thicknesses, des_dp_Mass] =  load_params();
-amplitude_range = [0.9, 1]; % might adjust the lower bound for speed
+amplitude_range = [0.8, 1]; % might adjust the lower bound for speed
 
 %% An example
 % change the following to see effects
 K_shoe = 30000;
-thickness = 0.02;
+% thickness = 0.025;
+thickness = 0.005;
 
 tic
 [max_GRF, max_dpMass, mean_Pmet, amplitude_res] = ...
@@ -43,13 +50,14 @@ tic
     amplitude_range, des_dp_Mass);
 toc
 
-disp(max_GRF)
-disp(mean_Pmet)
+% disp(max_GRF)
+% disp(mean_Pmet)
 disp(max_dpMass)
+disp(amplitude_res)
 
-% sanity check
-[max_GRF_1, max_dpMass_1, mean_Pmet_1, amplitude_res_1] = ...
-    eval_all_objectives(model_name, K_shoe, thickness, amplitude_res);
+% % sanity check
+% [max_GRF_1, max_dpMass_1, mean_Pmet_1, amplitude_res_1] = ...
+%     eval_all_objectives(model_name, K_shoe, thickness, amplitude_res);
 
 
 %% sweep parameters in parfor
@@ -90,7 +98,7 @@ toc
 
 %% save the objectives only as .mat file
 
-filename = strcat(folder_dir,...
+filename = strcat(model_experiment_folder_dir,...
             'height_',num2str(des_dp_Mass),...
             '_objectives',...
             '.mat');

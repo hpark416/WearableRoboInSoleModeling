@@ -1,23 +1,30 @@
 %% Script that sweeps through parameters using parsim
 % amplitude is precribed and will not adjust to obtain same jump height
 % saves full time series data
-
 clc; close all; clear
 
+%%
+% change this
+% model_name = 'FullHopper_alt'; 
+model_name = 'Copy_of_FullHopper_alt'; 
+
+
 folder_dir = "./generated_data/";
+model_experiment_folder_dir = strcat(folder_dir,"/",model_name,"/");
 mkdir(folder_dir)
+mkdir(model_experiment_folder_dir)
 addpath(genpath('./helpers'))
 
 %% record baseline value
-model_name = 'models/FullHopper_baseline';
+baseline_model_name = 'models/FullHopper_baseline';
 w = warning('off','all');
-load_system(model_name);
+load_system(baseline_model_name);
 
-simout = sim(model_name);    
+simout = sim(baseline_model_name);    
 % save time series
 save(strcat(folder_dir,"baseline.mat"), "simout")
 
-close_system(model_name,0);          
+close_system(baseline_model_name,0);          
 warning(w)
 
 %% params sweep
@@ -26,7 +33,7 @@ amplitude = 1; % default value for now.
 
 %% actual simulation, preparation
 
-model_name = 'FullHopper_alt'; %Copy_of_
+
 model_filename = strcat('./models/',model_name,'.slx');
 w = warning('off','all');
 load_system(model_filename);
@@ -34,28 +41,6 @@ load_system(model_filename);
 set_param(model_name, ...
     'SimulationMode', 'accelerator', ...
     'FastRestart', 'off');
-
-%% regular non-parallel simulation loop, have not tested
-% tic
-
-% for thickness = thicknesses % more like max compression
-%     disp(strcat("thickness=", num2str(thickness)))
-    
-%     for K_shoe = K_shoes
-        
-%         [simIn,~] = assemble_sim_inputs(model_name, ...
-%         K_shoe, thickness, amplitude); 
-        
-%         filename = strcat(folder_dir,...
-%             'k_',num2str(K_shoe),'_maxcomp_',num2str(thickness),'.mat');
-
-%         simout = sim(simIn);     
-%         save(filename, "simout")
-
-%     end
-% end
-
-% toc
 
 %% parallel simulation
 tic
@@ -72,7 +57,7 @@ toc
 n_sims = length(simIn);
 
 for sim_idx = 1:n_sims % [K_shoe, thickness, amplitude]
-        filename = strcat(folder_dir,...
+        filename = strcat(model_experiment_folder_dir,...
             'k_',num2str(param_combinations(sim_idx,1)),...
             '_maxcomp_',num2str(param_combinations(sim_idx,2)),...
             '.mat');

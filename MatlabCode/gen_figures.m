@@ -2,7 +2,13 @@
 % jump height is not fixed.
 
 clc;close all; clear
+%%
+% change this
+% model_name = 'FullHopper_alt';
+model_name = 'Copy_of_FullHopper_alt'; 
+
 folder_dir = "./generated_data/";
+model_experiment_folder_dir = strcat(folder_dir,"/",model_name,"/");
 image_folder_dir = strcat(folder_dir,"figures/");
 mkdir(image_folder_dir)
 
@@ -24,7 +30,7 @@ for K_shoe_idx = 1:length(K_shoes)
     for thickness_idx = 1:length(thicknesses)
         thickness = thicknesses(thickness_idx);
             
-        filename = strcat(folder_dir,...
+        filename = strcat(model_experiment_folder_dir,...
             'k_',num2str(K_shoe),'_maxcomp_',num2str(thickness),'.mat');
        
         if exist(filename, 'file') == 2         % Checking if file exists      
@@ -41,14 +47,14 @@ end
 
 [X,Y] = meshgrid(K_shoes,thicknesses);
 
-%% Plot GRF
+%% Plot GRF, TODO handle different model names better
 titlename = strcat("max GRF, baseline = ", ...
             num2str(max_GRF_baseline), "N");
                 
 fig = init_contourf(titlename);
 contourf(X,Y,max_GRFs')
 
-saveas(fig,strcat(image_folder_dir,"GRF_colormap.png"))
+saveas(fig,strcat(image_folder_dir,model_name, "_GRF_colormap.png"))
 
 %% Plot Pmet
 titlename = strcat("$\bar P_{met}$, baseline = ", ...
@@ -56,7 +62,7 @@ titlename = strcat("$\bar P_{met}$, baseline = ", ...
 fig = init_contourf(titlename);
 contourf(X,Y,mean_Pmets')
 
-saveas(fig,strcat(image_folder_dir,"mean_Pmet_colormap.png"))
+saveas(fig,strcat(image_folder_dir,model_name,"_mean_Pmet_colormap.png"))
 
 %% Plot dp_Mass
 titlename = strcat("max $dp_{Mass}$, baseline = ", ...
@@ -64,5 +70,5 @@ titlename = strcat("max $dp_{Mass}$, baseline = ", ...
 fig = init_contourf(titlename);
 contourf(X,Y,max_dpMasses')
 
-saveas(fig,strcat(image_folder_dir,"dpMass_colormap.png"))
+saveas(fig,strcat(image_folder_dir,model_name,"_dpMass_colormap.png"))
 
