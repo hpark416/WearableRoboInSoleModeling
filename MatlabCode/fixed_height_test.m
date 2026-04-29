@@ -9,8 +9,8 @@ addpath(genpath('./helpers'))
 addpath(genpath('./models')) % or parfor cannot access
 
 %% load model
-% model_name = 'FullHopper_alt';
-model_name = 'Copy_of_FullHopper_alt'; 
+% model_name = 'FullHopper_k';
+model_name = 'FullHopper_kb'; 
 
 model_filename = strcat('./models/',model_name,'.slx');
 

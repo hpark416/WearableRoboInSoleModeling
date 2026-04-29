@@ -4,8 +4,8 @@
 clc;close all; clear
 %%
 % change this
-% model_name = 'FullHopper_alt';
-model_name = 'Copy_of_FullHopper_alt'; 
+% model_name = 'FullHopper_k';
+model_name = 'FullHopper_kb'; 
 
 folder_dir = "./generated_data/";
 model_experiment_folder_dir = strcat(folder_dir,"/",model_name,"/");
