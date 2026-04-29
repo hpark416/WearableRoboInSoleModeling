@@ -27,8 +27,8 @@ for K_shoe_idx = 1:length(K_shoes)
         filename = strcat(folder_dir,...
             'k_',num2str(K_shoe),'_maxcomp_',num2str(thickness),'.mat');
        
-        if exist(filename) == 2          % Checking if file exists      
-            d = load(filename);          % Loads data from file
+        if exist(filename, 'file') == 2         % Checking if file exists      
+            d = load(filename);                 % Loads data from file
 
             [max_GRF, max_dpMass, mean_Pmet] = analyze_sole_output(d.simout);
             max_GRFs(K_shoe_idx, thickness_idx) = max_GRF;

@@ -26,14 +26,14 @@ amplitude = 1; % default value for now.
 
 %% actual simulation, preparation
 
-model_name = 'FullHopper_alt';
+model_name = 'FullHopper_alt'; %Copy_of_
 model_filename = strcat('./models/',model_name,'.slx');
 w = warning('off','all');
 load_system(model_filename);
 % should not be the path name
 set_param(model_name, ...
     'SimulationMode', 'accelerator', ...
-    'FastRestart', 'on');
+    'FastRestart', 'off');
 
 %% regular non-parallel simulation loop, have not tested
 % tic
