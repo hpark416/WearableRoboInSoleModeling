@@ -14,7 +14,7 @@ mdlWks.assignin('gravity',9.81);
 % dp_sole IC = 0
 % dp_sub IC = 0.1
 
-out = sim(model,'StopTime','2');
+out = sim(model,'StopTime','5');
 
 figure;
 plot(out.dp_Mass.Time,out.dp_Mass.Data,'LineWidth',1.5); hold on;
