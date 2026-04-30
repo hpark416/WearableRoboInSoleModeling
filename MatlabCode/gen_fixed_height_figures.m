@@ -8,7 +8,8 @@ addpath(genpath('./helpers'))
 
 % change this
 % model_name = 'FullHopper_k';
-model_name = 'FullHopper_kb'; 
+% model_name = 'FullHopper_kb'; 
+model_name = 'FullHopper_kb_splines'; 
 
 model_experiment_folder_dir = strcat(folder_dir,"/",model_name,"/");
 
@@ -31,15 +32,21 @@ max_dpMass_2D = reshape(d.out(:,2),new_shape);
 mean_Pmet_2D = reshape(d.out(:,3),new_shape);
 amplitudes_2D = reshape(d.out(:,4),new_shape);
 
-
-K_shoes_2D = reshape(d.param_combinations(:,1), new_shape);
-stiffnesses_2D = reshape(d.param_combinations(:,2), new_shape);
+% unpack from list of structs
+K_shoes_2D = []; % column
+thicknesses_2D = [];
+for i = 1:length(d.param_combinations)
+    K_shoes_2D = [K_shoes_2D; d.param_combinations(i).K_shoe];
+    thicknesses_2D = [thicknesses_2D; d.param_combinations(i).thickness];
+end
+K_shoes_2D = reshape(K_shoes_2D, new_shape);
+thicknesses_2D = reshape(thicknesses_2D, new_shape);
 
 %% amplitude
 titlename = strcat("Amplitude, max $dp_{Mass}$ = ", num2str(...
     des_dp_Mass*100), "$\pm$0.05cm");
 fig = init_contourf(titlename);
-contourf(K_shoes_2D, stiffnesses_2D, amplitudes_2D)
+contourf(K_shoes_2D, thicknesses_2D, amplitudes_2D)
 
 saveas(fig,strcat(image_folder_dir, model_name, "_height_", num2str(...
     des_dp_Mass), "_amplitude_colormap.png"))
@@ -48,7 +55,7 @@ saveas(fig,strcat(image_folder_dir, model_name, "_height_", num2str(...
 titlename = strcat("max GRF (N), max $dp_{Mass}$ = ", num2str(...
     des_dp_Mass*100), "$\pm$0.05cm");
 fig = init_contourf(titlename);
-contourf(K_shoes_2D, stiffnesses_2D, max_GRF_2D)
+contourf(K_shoes_2D, thicknesses_2D, max_GRF_2D)
 
 saveas(fig,strcat(image_folder_dir,model_name, "_height_", num2str(...
     des_dp_Mass), "_GRF_colormap.png"))
@@ -57,7 +64,7 @@ saveas(fig,strcat(image_folder_dir,model_name, "_height_", num2str(...
 titlename = strcat("real max $dp_{Mass}$(m), max $dp_{Mass}$ = ", num2str(...
     des_dp_Mass*100), "$\pm$0.05cm");
 fig = init_contourf(titlename);
-contourf(K_shoes_2D, stiffnesses_2D, max_dpMass_2D)
+contourf(K_shoes_2D, thicknesses_2D, max_dpMass_2D)
 
 saveas(fig,strcat(image_folder_dir,model_name,"_height_", num2str(...
     des_dp_Mass), "_dpMass_colormap.png"))
@@ -66,7 +73,7 @@ saveas(fig,strcat(image_folder_dir,model_name,"_height_", num2str(...
 titlename = strcat("$\bar P_{met}$, max $dp_{Mass}$ = ", num2str(...
     des_dp_Mass*100), "$\pm$0.05cm");
 fig = init_contourf(titlename);
-contourf(K_shoes_2D, stiffnesses_2D, mean_Pmet_2D)
+contourf(K_shoes_2D, thicknesses_2D, mean_Pmet_2D)
 
 saveas(fig,strcat(image_folder_dir,model_name,"_height_", num2str(...
     des_dp_Mass), "_Pmet_colormap.png"))

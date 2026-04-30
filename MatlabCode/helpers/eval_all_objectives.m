@@ -4,8 +4,9 @@
 % the main file that contains the global variable model_name
 % since true objective will be the weighted combinations of them
 function [max_GRF, max_dpMass, mean_Pmet, amplitude_res] = ...
-    eval_all_objectives(model_name, K_shoe, thickness, amplitude, varargin)
-    % amplitude: scalar or 2-element vector. For the latter, denotes a range.
+    eval_all_objectives(model_name, material_params, amplitude, varargin)
+    % amplitude: scalar or 2-element vector. 
+    % For the latter, denotes a range.
     
     % the single-scalar objective should be defined by 
     % the wrapper that calls this function.
@@ -15,13 +16,13 @@ function [max_GRF, max_dpMass, mean_Pmet, amplitude_res] = ...
     if isscalar(amplitude) % amplitude is a prescribed value
         amplitude_res = amplitude;
         [max_GRF, max_dpMass, mean_Pmet] = ...
-            eval_params(model_name, K_shoe, thickness, amplitude);
+            eval_params(model_name, material_params, amplitude);
 
     else % amplitude is a permissable range
         % assumes that varargin is not empty; throws an error anyway
         des_max_dpMass = varargin{1};
         [amplitude_res, max_GRF, max_dpMass, mean_Pmet] =  search_amplitude(...
-            des_max_dpMass, model_name, K_shoe, thickness, amplitude);
+            des_max_dpMass, model_name, material_params, amplitude);
     end
 end
 
@@ -29,10 +30,10 @@ end
 %% helpers
 %% wrapper to simulate and analyze output
 function [max_GRF, max_dpMass, mean_Pmet] = ...
-    eval_params(model_name, K_shoe, thickness, amplitude)
+    eval_params(model_name, material_params, amplitude)
 
     [simIn,~] = assemble_sim_inputs(model_name, ...
-        K_shoe, thickness, amplitude); 
+        material_params, amplitude); 
     simOut = sim(simIn);
     
     [max_GRF, max_dpMass, mean_Pmet] = analyze_sole_output(simOut);
@@ -55,7 +56,7 @@ end
 % varargin{2}:
 %   int, number of iterations.
 function [amplitude, max_GRF, max_dpMass, mean_Pmet] =  search_amplitude(...
-    des_max_dpMass, model_name, K_shoe, thickness, amplitude_range, ...
+    des_max_dpMass, model_name, material_params, amplitude_range, ...
     varargin)
     % threshold is +-0.0005
     % do not use parallelization as the main function is in parfor
@@ -64,10 +65,10 @@ function [amplitude, max_GRF, max_dpMass, mean_Pmet] =  search_amplitude(...
         objectives_range = zeros(2,3);
         % get objectives corresponding to minimum amplitude
         objectives_range(1,:) = ...
-            eval_and_pack(model_name, K_shoe, thickness, amplitude_range(1));
+            eval_and_pack(model_name, material_params, amplitude_range(1));
         % get objectives corresponding to maximum amplitude
         objectives_range(2,:) = ...
-            eval_and_pack(model_name, K_shoe, thickness, amplitude_range(2));
+            eval_and_pack(model_name, material_params, amplitude_range(2));
 
         iters = 1;
     else
@@ -79,7 +80,7 @@ function [amplitude, max_GRF, max_dpMass, mean_Pmet] =  search_amplitude(...
     if iters > 10
         amplitude = mean(amplitude_range); 
         [max_GRF, max_dpMass, mean_Pmet] = ...
-            eval_params(model_name, K_shoe, thickness, amplitude_range(2));
+            eval_params(model_name, material_params, amplitude_range(2));
         return
     end
 
@@ -97,7 +98,7 @@ function [amplitude, max_GRF, max_dpMass, mean_Pmet] =  search_amplitude(...
     % evaluate midpoint
     mid_amplitude = mean(amplitude_range);
     mid_objectives = ...
-        eval_and_pack(model_name, K_shoe, thickness, mid_amplitude);
+        eval_and_pack(model_name, material_params, mid_amplitude);
     mid_max_dpMass = mid_objectives(2);
 
     % hard-coded threshold
@@ -119,7 +120,7 @@ function [amplitude, max_GRF, max_dpMass, mean_Pmet] =  search_amplitude(...
     end
     % search recusively until returns
     [amplitude, max_GRF, max_dpMass, mean_Pmet] = search_amplitude(...
-                    des_max_dpMass, model_name, K_shoe, thickness, ...
+                    des_max_dpMass, model_name, material_params, ...
                     next_amplitude_range, ...
                     next_objectives_range, iters+1);
 
@@ -135,10 +136,10 @@ function [max_GRF, max_dpMass, mean_Pmet] = unpack(objectives)
 end
 
 function objectives = eval_and_pack(...
-    model_name, K_shoe, thickness, amplitude)
+    model_name, material_params, amplitude)
 
     [max_GRF, max_dpMass, mean_Pmet] = eval_params(...
-        model_name, K_shoe, thickness, amplitude);
+        model_name, material_params, amplitude);
     objectives = [max_GRF, max_dpMass, mean_Pmet];
 end
 

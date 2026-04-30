@@ -29,6 +29,8 @@ warning(w)
 
 %% params sweep
 [K_shoes, thicknesses, ~] =  load_params();
+material_params.K_shoe = K_shoes;
+material_params.thickness = thicknesses;
 amplitude = 1; % default value for now.
 
 %% actual simulation, preparation
@@ -46,7 +48,7 @@ set_param(model_name, ...
 tic
 
 [simIn, param_combinations] = assemble_sim_inputs( ...
-                               model_name, K_shoes, thicknesses, amplitude);
+                               model_name, material_params, amplitude);
 simouts = parsim(simIn);
 
 toc
