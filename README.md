@@ -20,7 +20,7 @@ The active workflow in this repo is:
 
 - `MatlabCode/`: primary and actively updated simulation codebase (models, helpers, optimization, sweeps, and generated outputs).
 - `MatlabCode/models/`: current Simulink model variants (`FullHopper_baseline.slx`, `FullHopper_k.slx`, `FullHopper_kb.slx`, `FullHopper_kb_splines.slx`).
-- `SplineMatlabCode/`: older parallel branch/snapshot of spline experiments retained for reference.
+- `MiscMatlabCode/SplineMatlabCode/`: older parallel branch/snapshot of spline experiments retained for reference.
 - `Project Proposal/`: original scope document and project report PDF.
 - `PapersResearch/`: literature tracking notes and references.
 - `DataForReport/`: placeholder folder for curated report assets (currently minimal).
@@ -30,4 +30,4 @@ The active workflow in this repo is:
 
 1. Open `MatlabCode/README.md` for the active workflow.
 2. Use `MatlabCode/models/README.md` for model-level details.
-3. Use `SplineMatlabCode/README_SPLINE.md` only as legacy background/reference.
+3. Use `MiscMatlabCode/SplineMatlabCode/README_SPLINE.md` only as legacy background/reference.

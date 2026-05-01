@@ -1,7 +1,7 @@
 # Spline Modeling Notes (Legacy Folder)
 
-This document describes the spline-based sole approach implemented in `SplineMatlabCode/`.  
-That folder is retained for reference; the active workflow is now in `../MatlabCode/`.
+This document describes the spline-based sole approach implemented in `MiscMatlabCode/SplineMatlabCode/`.  
+That folder is retained for reference; the active workflow is now in `../../MatlabCode/`.
 
 ## Spline Sole Concept
 

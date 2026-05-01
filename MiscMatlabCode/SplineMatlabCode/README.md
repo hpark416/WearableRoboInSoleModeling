@@ -5,7 +5,7 @@ This folder is an older standalone spline-modeling workspace kept for reference.
 ## Status
 
 - This is **not** the primary working directory anymore.
-- Active development and the latest model variants live in `../MatlabCode/`.
+- Active development and the latest model variants live in `../../MatlabCode/`.
 - Keep this folder for historical comparison and reproducing older spline experiments.
 
 ## What Is In This Folder
