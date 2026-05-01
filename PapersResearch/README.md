@@ -1,15 +1,20 @@
 # Papers Research
 
-This folder is for literature collection and research notes that support model assumptions and experiment design.
+This folder stores literature references and notes supporting model assumptions and parameter choices.
 
-## Suggested Organization
+## Current Status
 
-- add PDFs or links to key papers,
-- keep concise summaries of methods/results relevant to sole stiffness and running dynamics,
-- track how each source informs model parameters or validation targets.
+- Only the README is present right now.
+- Add papers/notes here as the bibliography grows.
 
-## Seed Topics from Proposal
+## Recommended Organization
 
-- forefoot stiffness and shoe bending stiffness,
-- toe-joint/prosthetic flexibility effects on locomotion energetics,
-- ground reaction force modeling for hard versus soft soles.
+- `papers/` for PDFs or citation exports,
+- `notes/` for concise summaries tied to modeling decisions,
+- `sources.md` for a quick index of key references.
+
+## Priority Topics
+
+- nonlinear sole force-displacement behavior,
+- footwear stiffness/compliance effects on GRF and running economy,
+- damping and energy-return modeling assumptions for hopper-style simulations.

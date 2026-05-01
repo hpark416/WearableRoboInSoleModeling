@@ -1,52 +1,47 @@
-# MatlabCode
+# MatlabCode (Active)
 
-This folder contains the MATLAB/Simulink implementation for the wearable insole modeling study, including baseline and modified hopper models, parameter-sweep scripts, generated `.mat` data, and colormap figures.
+This is the primary MATLAB/Simulink workspace for the wearable insole modeling project.
 
-## Current Folder Structure
-- `models`: Simulink hopper models.
-    - `FullHopper_alt.slx`: modified Simulink hopper model with shoe parameters.
-    - `FullHopper_baseline.slx`: baseline model used for comparison.
-- `generated_data/`: saved simulation outputs (`baseline.mat` and sweep `.mat` files).
-    - `figures/`: generated heatmaps.
-- `helpers`: functions folder
-    - `parfor_progress`: function to support parfor progress printing, from matlab file exchange.
-    - `analyze_sole_output.m`: extracts GRF, jump height and metabolic rate from simulation output object.
-    - `assemble_sim_inputs.m`: given parameters. generate a single or an array of SimulationInput objects.
-    - `eval_all_objectives.m`: function that directly outputs objectives, supports fixing jump height.
-    - `init_contourf.m`: boilerplate to initialize heatmap figure.
-    - `load_params.m`: generate sweep parameters for consistency
-- `bayesian_optimization_test.m`: runs bayesian optimization.
-- `fixed_height_test.m`: run simulation sweeps with fixed jump height.
-- `gen_fixed_height_figures`: generate figures for `fixed_height_test.m`.
-- `gen_data.m`: runs simulation sweeps and saves outputs to `generated_data/`.
-- `gen_figures.m`: loads sweep outputs and generates contour heatmaps.
-- `performance_eval.m`: preliminary 1D evaluation script for stiffness and max compression.
+## What Is In This Folder
 
-## Parameter Sweep Data
+- `models/`: current Simulink models (`FullHopper_baseline.slx`, `FullHopper_k.slx`, `FullHopper_kb.slx`, `FullHopper_kb_splines.slx`).
+- `helpers/`: shared utility functions (`analyze_sole_output.m`, `assemble_sim_inputs.m`, `eval_all_objectives.m`, `load_params.m`, and `parfor_progress/`).
+- `generated_data/`: produced `.mat` sweep outputs plus `figures/`.
+- Core scripts:
+  - `bayesian_optimization_spline.m`: optimize spline control points + sole thickness.
+  - `bayesian_optimization_test.m`: baseline Bayesian optimization script.
+  - `gen_data.m`: run parameter sweeps and save outputs.
+  - `gen_figures.m`: build contour plots from saved sweeps.
+  - `fixed_height_test.m`: run sweeps with fixed jump-height handling.
+  - `gen_fixed_height_figures.m`: plots for fixed-height runs.
+  - `performance_eval.m`: quick 1D checks.
+  - `splines_test.m`: helper/testing script for spline behavior.
 
-`gen_data.m` and `fixed_height_test.m` currently sweeps:
+## Model Variants (High Level)
 
-- `K_shoe` from `20000` to `755000` N/m (step `2500`),
-- `thickness` (used as max compression) from `0.005` to `0.025` m (step `0.0025`).
+- `FullHopper_baseline.slx`: baseline/reference behavior.
+- `FullHopper_k.slx`: stiffness-focused model variant.
+- `FullHopper_kb.slx`: stiffness + damping variant.
+- `FullHopper_kb_splines.slx`: spline-based sole force-displacement variant.
 
-The dataset in `generated_data/` currently includes:
+## Data Snapshot
 
-- `baseline.mat` (baseline simulation output),
-- 135 sweep outputs named like `k_<stiffness>_maxcomp_<value>.mat`,
-- 2136 `.mat` files total in the folder.
+`generated_data/` currently contains:
+- `baseline.mat`,
+- many files named `k_<stiffness>_maxcomp_<value>.mat`,
+- and a `figures/` folder for generated plots.
 
-## Generated Figures
+Treat generated data as reproducible output that can be rebuilt by rerunning scripts.
 
-`gen_figures.m` produces contour maps in `generated_data/figures/`:
+## Typical Run Order
 
-- `GRF_colormap.png`
-- `mean_Pmet_colormap.png`
-- `dpMass_colormap.png`
+1. Run `bayesian_optimization_spline.m` when updating spline parameters.
+2. Run `gen_data.m` to regenerate parameter sweep outputs.
+3. Run `gen_figures.m` to regenerate contour figures.
+4. Optionally run `fixed_height_test.m` and `gen_fixed_height_figures.m`.
 
-These summarize how peak GRF, mean metabolic proxy (`mean_Pmet`), and peak mass displacement vary across the 2D parameter grid.
+## Dependencies
 
-## Typical Workflow
-
-1. Run `gen_data.m` to generate or refresh sweep data.
-2. Run `gen_figures.m` to regenerate heatmaps from saved `.mat` files.
-3. Use `performance_eval.m` for quick 1D exploratory checks of stiffness or max compression trends.
+- MATLAB/Simulink 2020a or later
+- Statistics and Machine Learning Toolbox
+- Parallel Computing Toolbox

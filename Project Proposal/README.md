@@ -1,6 +1,6 @@
 # Project Proposal
 
-This folder stores the original project proposal that defines scope, motivation, and planned methods.
+This folder stores the original project proposal and scope definition documents.
 
 ## Current Contents
 
@@ -8,4 +8,5 @@ This folder stores the original project proposal that defines scope, motivation,
 
 ## Notes
 
-The proposal outlines a hopper-model-based simulation approach and describes candidate variables including sole stiffness, material behavior, demographics, and environment/task conditions.
+The proposal outlines the initial hopper-model-based plan.  
+Implementation has since evolved (including spline-based sole modeling in `MatlabCode/`), but this document remains the source of original objectives and motivation.

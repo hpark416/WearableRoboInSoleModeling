@@ -1,30 +1,33 @@
 # Wearable Robo Insole Modeling
 
-This repository contains a course project investigating optimal shoe sole and insole design for running performance and impact mitigation.
+MATLAB/Simulink project for studying how shoe sole mechanical behavior changes running dynamics in a hopper-style model.
 
-## Matlab Toolbox dependencies
-This repository is developed with MATLAB/Simulink 2020a. Additional toolboxes are: 
-- Statistics and Machine Learning Toolbox (for Bayesian Optimization)
-- Parallel Computing Toolbox (to speed up simulation, but not implemented yet)
+## Current Focus
 
-## Project Focus
+The active workflow in this repo is:
+- model the sole as a nonlinear force-displacement curve (spline),
+- optimize spline control points and thickness with Bayesian optimization,
+- run sweep studies and fixed-jump-height studies,
+- and compare peak GRF, displacement, and metabolic proxy metrics.
 
-Based on the proposal in `Project Proposal/Wearable_Robotics_Project_Report.pdf`, the project explores:
+## Main Dependencies
 
-- how sole stiffness (and potentially thickness/material behavior) affects running dynamics,
-- how demographic factors may change ideal insole properties,
-- and how surface/task differences may influence outcomes.
+- MATLAB/Simulink 2020a or later
+- Statistics and Machine Learning Toolbox (Bayesian optimization)
+- Parallel Computing Toolbox (`parsim`-based sweep runs)
 
-The modeling approach is based on a hopper-style simulation framework intended to approximate key running dynamics such as elastic energy storage/return and aerial stance phases.
+## Repository Layout
 
-## Repository Structure
+- `MatlabCode/`: primary and actively updated simulation codebase (models, helpers, optimization, sweeps, and generated outputs).
+- `MatlabCode/models/`: current Simulink model variants (`FullHopper_baseline.slx`, `FullHopper_k.slx`, `FullHopper_kb.slx`, `FullHopper_kb_splines.slx`).
+- `SplineMatlabCode/`: older parallel branch/snapshot of spline experiments retained for reference.
+- `Project Proposal/`: original scope document and project report PDF.
+- `PapersResearch/`: literature tracking notes and references.
+- `DataForReport/`: placeholder folder for curated report assets (currently minimal).
+- `MiscMatlabCode/`: archived comparison material and external/reference model files.
 
-- `Project Proposal/`: Source proposal and planning documentation.
-- `PapersResearch/`: Literature notes and reference tracking.
-- `DataForReport/`: Curated key figures, datasets, and assets used in reports and other project deliverables.
+## Where To Start
 
-## Expected Outputs
-
-- simulation/model updates for insole behavior,
-- parameter studies across sole properties and user/environment assumptions,
-- and quantitative comparisons (e.g., force profile or energetic implications) supported by figures and references.
+1. Open `MatlabCode/README.md` for the active workflow.
+2. Use `MatlabCode/models/README.md` for model-level details.
+3. Use `SplineMatlabCode/README_SPLINE.md` only as legacy background/reference.
