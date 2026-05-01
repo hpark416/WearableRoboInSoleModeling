@@ -36,7 +36,12 @@ dF2_var = optimizableVariable('dF2', dF_interval);
 dF3_var = optimizableVariable('dF3', dF_interval);
 dF4_var = optimizableVariable('dF4', dF_interval);
 
-results = bayesopt(@(params)eval_GRF(model_name, params),...
+%% Choose objective here — change this line to switch objectives
+% Options: @eval_minimize_GRF, @eval_minimize_Pmet, @eval_normalized_weighted
+objective_fn = @eval_minimize_GRF;
+objective_name = 'GRF'; % change to 'Pmet' or 'Normalized' to match above
+%%
+results = bayesopt(@(params)objective_fn(model_name, params),...
     [dx2_var, dF2_var, dx3_var, dF3_var, dx4_var, dF4_var],...
     'IsObjectiveDeterministic', true,...
     'UseParallel', true,...
@@ -44,12 +49,22 @@ results = bayesopt(@(params)eval_GRF(model_name, params),...
     'XConstraintFcn',@(params)profile_constraints(...
     params,max_endpoint,K_shoes_interval));
 
+
 %% Save optimal parameters for use in other scripts
 best = to_control_points(results.XAtMinObjective);
 mkdir('./generated_data')
-save('./generated_data/optimal_spline.mat', 'best');
-disp('Optimal spline parameters saved to generated_data/optimal_spline.mat')
+filename = strcat('./generated_data/optimal_spline_', objective_name, '.mat');
+save(filename, 'best');
+disp(strcat('Optimal spline parameters saved to ', filename))
 
+%% Plot optimal spline shape
+[force_table, disp_table] = generate_lookup(best);
+figure
+plot(disp_table * 1000, force_table)
+xlabel('Displacement (mm)')
+ylabel('Force (N)')
+title(strcat('Optimal Spline Shape - ', objective_name))
+grid on
 %%
 set_param(model_name, 'FastRestart', 'off');
 close_system(model_name, 0);
@@ -70,16 +85,33 @@ end
 
 %% Objective function
 % [objective, constraints]
-function max_GRF = eval_GRF(model_name, params)
-
-
+function max_GRF = eval_minimize_GRF(model_name, params)
     ctrl_points_params = to_control_points(params);
-
     [mat_params.force_table, mat_params.disp_table] = ...
                                 generate_lookup(ctrl_points_params);
     [max_GRF, ~, ~, ~] = ...
-        eval_all_objectives(model_name, mat_params, [0.8, 1.0], 0.4);
-        
+        eval_all_objectives(model_name, mat_params, [0.8, 1.0], 0.04);
+end
+
+function mean_Pmet = eval_minimize_Pmet(model_name, params)
+    ctrl_points_params = to_control_points(params);
+    [mat_params.force_table, mat_params.disp_table] = ...
+                                generate_lookup(ctrl_points_params);
+    [~, ~, mean_Pmet, ~] = ...
+        eval_all_objectives(model_name, mat_params, [0.8, 1.0], 0.04);
+end
+
+function objective = eval_normalized_weighted(model_name, params)
+    ctrl_points_params = to_control_points(params);
+    [mat_params.force_table, mat_params.disp_table] = ...
+                                generate_lookup(ctrl_points_params);
+    [max_GRF, ~, mean_Pmet, ~] = ...
+        eval_all_objectives(model_name, mat_params, [0.8, 1.0], 0.04);
+
+    GRF_baseline  = 1411.0673;
+    Pmet_baseline = 158.204;
+
+    objective = (max_GRF / GRF_baseline) + (mean_Pmet / Pmet_baseline);
 end
 
 %% Constraints
