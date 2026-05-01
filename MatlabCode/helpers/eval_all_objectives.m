@@ -102,8 +102,8 @@ function [amplitude, max_GRF, max_dpMass, mean_Pmet] =  search_amplitude(...
     mid_max_dpMass = mid_objectives(2);
 
     % hard-coded threshold
-%     if abs(mid_max_dpMass - des_max_dpMass) < 0.005
-    if abs(mid_max_dpMass - des_max_dpMass) < 0.0005
+%     if abs(mid_max_dpMass - des_max_dpMass) < 0.0005
+    if abs(mid_max_dpMass - des_max_dpMass) < 0.001
         amplitude = mid_amplitude;
         [max_GRF, max_dpMass, mean_Pmet] = unpack(mid_objectives(:));
         return

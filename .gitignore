@@ -8,7 +8,10 @@ slprj/
 
 generated_data/
 *.png
+*.jpg
 *.csv
 *.zip
 !DataForReport/
 !DataForReport/**
+
+.DS_Store
