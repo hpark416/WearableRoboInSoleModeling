@@ -15,7 +15,7 @@ gen_sweep_data(model_name, false, false);
 gen_sweep_colormaps(model_name, folder_dir, ...
     false, true, true)
 
-%% jump at height = 4cm
+%% jump at height = 6cm
 model_name = 'FullHopper_kb'; 
 gen_sweep_data(model_name, true, false);
 
@@ -33,9 +33,10 @@ gen_sweep_data(model_name, false, true);
 gen_sweep_colormaps(model_name, folder_dir, ...
     false, true, true)
 
-%% height = 4cm on curve model
+%% height = 6cm on curve model
 model_name = 'FullHopper_kb_splines'; 
 gen_sweep_data(model_name, true, true);
+
 %%
 gen_sweep_colormaps(model_name, folder_dir, ...
     true, false, false)

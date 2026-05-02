@@ -25,6 +25,7 @@ run_force_disp_BO(objective_fn, objective_name)
 function run_force_disp_BO(objective_fn, objective_name)
 %% wrapped into a function
 addpath('./helpers')
+addpath('./models')
 
 model_name = 'FullHopper_kb_splines';
 model_filename = strcat('./models/',model_name,'.slx');
@@ -130,8 +131,8 @@ function objective = eval_normalized_weighted(model_name, params)
         eval_all_objectives(model_name, mat_params, [0.8, 1.0], 0.04);
     
     % hard coded; better if we pass them in
-    GRF_baseline  = 1319.6;
-    Pmet_baseline = 165.1976;
+    GRF_baseline  = 1371.1;
+    Pmet_baseline = 162.895;
 
     objective = (max_GRF / GRF_baseline) + (mean_Pmet / Pmet_baseline);
 end
