@@ -100,6 +100,26 @@ So every objective uses:
 - **Amplitude search range** `[0.8, 1.0]`.
 - **Target peak COM displacement** `des_max_dpMass = 0.04` (third argument to `eval_all_objectives` in range mode).
 
+### Choosing a reasonable target peak COM displacement
+
+In this repo, two targets already appear:
+
+- `0.04` m in `bayesian_optimization_spline.m` (current BO setting).
+- `0.06` m in `helpers/load_params.m` (`des_dp_Mass` default).
+
+So a practical range for this workflow is **`0.04-0.06` m**, with `0.05` m as a sensible midpoint if you want one standard target.
+
+Selection guidance:
+
+- Use the lower end (`~0.04`) when you want conservative hopping demand and easier feasibility within `[0.8, 1.0]`.
+- Use the upper end (`~0.06`) for more aggressive hopping demand, accepting that more candidates may hit range/constraint limits.
+- Prefer targets that sit comfortably inside the achievable `max_dpMass` interval over the amplitude range, rather than close to either endpoint.
+
+Brief literature context: reported vertical COM oscillation during running is often on the order of about **6-10 cm** (method-dependent), so `0.04-0.06` m is a plausible lower-to-mid locomotion regime for fixed-height studies in this model family.
+
+- Heiderscheit et al., "Measurements of vertical displacement in running, a methodological comparison," *Gait Posture* (2009), [PubMed](https://pubmed.ncbi.nlm.nih.gov/19356933/).
+- Sanno et al., "The use of a single sacral marker method to approximate the centre of mass trajectory during treadmill running," *Journal of Biomechanics* (2021), [ScienceDirect](https://www.sciencedirect.com/science/article/abs/pii/S0021929020303092).
+
 Details of fixed-height search and metrics are documented in [`README_eval_all_objectives.md`](helpers/README_eval_all_objectives.md).
 
 | Wrapper | Scalar returned to `bayesopt` |
@@ -109,6 +129,30 @@ Details of fixed-height search and metrics are documented in [`README_eval_all_o
 | `eval_normalized_weighted` | `(max_GRF / 1371.1) + (mean_Pmet / 162.895)` — **hard-coded** baseline divisors in the script |
 
 The normalized objective is a **sum of two dimensionless terms**, not a weighted average with tunable weights (unless you edit the script).
+
+### What "normalized weighted" means here
+
+In `eval_normalized_weighted`, the objective is:
+
+```matlab
+objective = (max_GRF / 1371.1) + (mean_Pmet / 162.895);
+```
+
+- **Normalized**: each metric is divided by a baseline-scale constant, so both terms are unitless.
+- **Weighted (implicitly)**: the divisors act like inverse weights. A smaller divisor gives that metric more influence on the total objective.
+- **Not a weighted average**: there are no explicit user-tunable weights (for example, no `w1`, `w2`, and no division by `w1 + w2`).
+
+### How the hard-coded divisors work
+
+The constants `1371.1` and `162.895` are fixed reference scales used to put `max_GRF` and `mean_Pmet` on comparable magnitudes before summation.
+
+Practical interpretation:
+
+- If both metrics are near their reference values, each normalized term is near `1`.
+- If one normalized term is consistently much larger than the other, that metric dominates optimization pressure.
+- Updating these constants changes the GRF-vs-metabolic tradeoff even when model outputs are unchanged.
+
+If you want stable interpretation across studies, compute divisors from a clearly defined baseline run and keep that baseline documented with the results.
 
 ## Constraints (`profile_constraints`)
 
