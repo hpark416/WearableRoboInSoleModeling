@@ -2,6 +2,8 @@
 
 This document describes what [`bayesian_optimization_spline.m`](bayesian_optimization_spline.m) does, how its optimization variables relate to the sole spline, and how it connects to [`helpers/eval_all_objectives.m`](helpers/eval_all_objectives.m) and [`helpers/generate_lookup.m`](helpers/generate_lookup.m).
 
+**Repo note:** `generated_data/` is **gitignored** (see repo `.gitignore`). Paths below are **local output locations** after you run the script.
+
 ## Purpose
 
 This script runs **Bayesian optimization** (`bayesopt`) over **six incremental parameters** that define a **piecewise monotone sole force–displacement curve**. For each candidate parameter vector it:
@@ -172,10 +174,13 @@ After each `bayesopt` run:
 
 `mkdir('./generated_data')` is called if the folder is missing.
 
+**Compare all three BO profiles on one axis (plus linear soles):** from `MatlabCode/`, run [`plot_BO_spline_profiles_comparison.m`](plot_BO_spline_profiles_comparison.m). It loads `optimal_spline_GRF.mat`, `optimal_spline_Pmet.mat`, and `optimal_spline_Normalized.mat`, overlays dashed linear references from the min/max `(K_shoe, thickness)` corners of `load_params`, and writes `generated_data/figures/BO_splines_vs_linear_force_displacement.png` when `export_png` is true.
+
 ## Related files
 
 | File | Role |
 |------|------|
+| [`plot_BO_spline_profiles_comparison.m`](plot_BO_spline_profiles_comparison.m) | One figure: BO splines vs linear reference curves. |
 | [`helpers/eval_all_objectives.m`](helpers/eval_all_objectives.m) | Simulates and returns objectives; fixed-height mode used here. |
 | [`helpers/README_eval_all_objectives.md`](helpers/README_eval_all_objectives.md) | Deep dive on objectives and amplitude search. |
 | [`helpers/generate_lookup.m`](helpers/generate_lookup.m) | Builds PCHIP-based `force_table` / `disp_table` from control points. |

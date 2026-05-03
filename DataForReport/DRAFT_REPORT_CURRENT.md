@@ -1,5 +1,7 @@
 # Wearable Insole Modeling Project - Draft Report (Current)
 
+This file is updated in step with **[REPORT_DRAFTING_NOTES.md](REPORT_DRAFTING_NOTES.md)** (figure inventory, protocols, and interpretation of fixed-height / `Pmet` results).
+
 ## Project Status Snapshot
 
 This draft summarizes what is currently implemented and what conclusions are reasonable at this stage of the project.
@@ -93,32 +95,26 @@ Real-world interpretation:
 
 ## Fixed-Height Evaluation and Target Selection
 
-To compare designs fairly, the workflow can search actuation amplitude to match target peak COM displacement (`max_dpMass`).
+To compare designs fairly, the workflow searches actuation amplitude within a bounded interval (for example `[0.8, 1]`) to match target peak COM displacement (`max_dpMass`). **`des_dpMass` is set in `MatlabCode/helpers/load_params.m`** and must match between sweep generation and analysis scripts.
 
-Current practical target range in this project:
+Targets used in recent runs include **0.04 m**, **0.06 m**, and **reference** values such as **~0.076 m** (from baseline or reporting needs). The **free-height** sweep (`gen_sweep_data(..., false, ...)`) uses **fixed** stimulation (`amplitude = 1`) and does **not** depend on `des_dpMass`; only the **fixed-height** objectives file (`height_<des>_objectives.mat`) changes when the target changes.
 
-- `0.04 m` (used in spline BO script),
-- `0.06 m` (used in shared parameters),
-- with `0.05 m` as a practical midpoint candidate.
+**Fixed vs free-height overlays** (`compare_fixed_vs_free_height_plots.m`): same stiffness–thickness grid; histogram and scatters show how locking height vs floating height changes the objective clouds. Curated PNGs: `DataForReport/figures/fixed_vs_free_height/`. Write-up: `DataForReport/figures/heightPmetAnalysisFigures/FINDINGS_AND_NEXT_STEPS.md`.
 
-## Current Observation to Explain: Prescribed Height vs `mean_Pmet`
+## Observation: Prescribed Height vs `mean_Pmet` (Updated)
 
-Team observation:
+Team observation (preserved):
 
 - prescribing baseline jump height can increase metabolic proxy (`mean_Pmet`) in some cases,
-- and metabolic contours may not change much between constrained-height and unconstrained settings.
+- and metabolic **`Pmet` contours** may not change much between constrained-height and unconstrained settings.
 
-Working explanation (hypothesis):
+**Simulation-supported framing** (iso-height grid, same model family):
 
-- energetic cost depends on force-production timing/rate and muscle operating regime, not only COM excursion magnitude;
-- matching a target height can force actuation patterns that are metabolically less favorable;
-- therefore, lower height does not automatically imply lower metabolic cost in the model.
+- With peak COM displacement held near the target, **`mean_Pmet` still varies widely** across soles; variation aligns with **resolved stimulation** (`amplitude_res`) and **dynamic / muscle-velocity proxies** (for example `m_FV`, force-rate and COM-derivative metrics), not with millimeter-level height residual — see Tables 1–3 in **`DataForReport/figures/heightPmetAnalysisFigures/FINDINGS_AND_NEXT_STEPS.md`** and figures `f1`–`f3` (`plot_fixed_height_Pmet_analysis.m`).
+- **Prescribed vs unprescribed sweeps are different protocols** (amplitude search vs fixed `amplitude = 1`); similar-looking contour maps do not imply “no effect” without comparing like tasks.
+- **Peak GRF is not a one-dimensional proxy for `Pmet`** on this grid (nonlinear / multi-branch association); qualify any “lower force ⇒ lower cost” statement.
 
-Recommended follow-up analysis:
-
-- plot `mean_Pmet` vs `amplitude_res` for fixed-height runs,
-- compare alongside `max_GRF` and achieved `max_dpMass`,
-- inspect whether control saturation or short force windows correlate with higher `mean_Pmet`.
+Follow-up already implemented: correlation CSVs and extended reruns as documented in FINDINGS; optional future work is nonlinear-sole-only batches beyond straight tables.
 
 ## Why 70 kg May Fail While 35 kg Works
 
@@ -143,34 +139,38 @@ Therefore:
 
 ## Figures and Tables to Include (Current Plan)
 
-Primary figures:
+Primary figures (paths relative to repo root; regenerate from `MatlabCode/` as noted in **REPORT_DRAFTING_NOTES.md**). Anything under **`MatlabCode/generated_data/`** is **gitignored** — only **`DataForReport/figures/`** paths are guaranteed in a clone unless you rerun pipelines.
 
-1. pipeline overview,
-2. baseline vs optimized force-displacement curves,
-3. 2D colormaps (`max_GRF`, `mean_Pmet`, `max_dpMass`),
-4. fixed-height comparison panels,
-5. GRF-vs-Pmet tradeoff scatter,
-6. BO convergence traces.
+| Item | Role | Draft / primary asset |
+|------|------|------------------------|
+| Pipeline overview | Methods anchor | `DataForReport/figures/draft_system_pipeline_overview.svg` |
+| F–Δx baseline vs BO splines | Shape of optimized soles | `DataForReport/figures/fig_force_displacement_BO_splines_vs_linear_reference.png` (`plot_BO_spline_profiles_comparison.m`) |
+| 2D sweeps | Landscapes | `MatlabCode/generated_data/figures/FullHopper_kb_*_colormap.png` (and spline variants as generated) |
+| Fixed-height `Pmet` analysis | Iso-height correlations | `DataForReport/figures/heightPmetAnalysisFigures/` (`*_Pmet_analysis_f1.png` … `f3.png`, **FINDINGS_AND_NEXT_STEPS.md**); regenerate from `MatlabCode/` |
+| Fixed vs free height | Protocol comparison | `DataForReport/figures/fixed_vs_free_height/*_fixed_vs_free_*.png` |
+| GRF vs `Pmet` tradeoff | Sweep + BO in objective space | `DataForReport/figures/fig_pareto_GRF_vs_meanPmet.png` (`plot_pareto_GRF_Pmet.m`; MATLAB also writes `generated_data/figures/`) |
+| BO convergence | Optimizer behavior | *Still to export* from BO workspace / saved trace |
 
 Primary tables:
 
 - model variant summary,
 - objective definition summary,
-- best BO candidate summary (for each objective mode).
+- best BO candidate summary (for each objective mode); optional: numeric rows from FINDINGS Tables 1–3 for fixed-height sweep text.
 
 ## Limitations (Current Stage)
 
 - No demographics or subgroup analysis (out of scope).
-- Some explanations are currently hypothesis-driven and need direct confirmation from additional diagnostics.
+- Correlations in FINDINGS are **associations** across the stiffness–thickness grid, not causal claims; single target height per figure set unless sensitivity rows are added.
 - Combined normalized objective depends on fixed divisors; tradeoff balance is sensitive to these choices.
+- BO training in `bayesian_optimization_spline.m` historically used one `des_dpMass` for evaluation; **Pareto** and reporting use **`load_params`** for consistency with the sweep — document which height each figure used.
 
 ## Next Steps
 
-1. Finalize standardized fixed-height target(s) for main figures.
-2. Generate/copy finalized figures to `DataForReport/figures/`.
-3. Add one focused analysis on `mean_Pmet` vs prescribed height mechanism.
-4. Add one focused analysis comparing successful `35 kg` vs failing `70 kg` attempts (if reruns are planned).
-5. Freeze a report-ready set of objective normalizers and document baseline source.
+1. Choose **one** primary `des_dpMass` for main-text figures; keep additional targets (e.g. 0.04 m, reference height) as sensitivity or supplement (**REPORT_DRAFTING_NOTES**, item 4).
+2. Export **BO convergence** traces when needed for the report (save `bayesopt` results or objective vs iteration during BO runs).
+3. Optional: quantitative **35 kg vs 70 kg** comparison (impulse, saturation) if reruns are planned.
+4. Freeze report-ready **normalizers** and baseline definitions; align README divisors with **README_bayesian_optimization_spline.md** if updated.
+5. Final pass: provenance line per figure (script, commit/date, `des_dpMass`, model name).
 
 ## References (Working List)
 

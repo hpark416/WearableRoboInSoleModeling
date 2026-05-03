@@ -18,12 +18,12 @@ The active workflow in this repo is:
 
 ## Repository Layout
 
-- `MatlabCode/`: primary and actively updated simulation codebase (models, helpers, optimization, sweeps, and generated outputs).
+- `MatlabCode/`: primary and actively updated simulation codebase (models, helpers, optimization, sweeps). Generated sweep outputs under `MatlabCode/generated_data/` are **gitignored** — recreate locally or use **`DataForReport/figures/`** for tracked report PNGs.
 - `MatlabCode/models/`: current Simulink model variants (`FullHopper_baseline.slx`, `FullHopper_k.slx`, `FullHopper_kb.slx`, `FullHopper_kb_splines.slx`).
 - `MiscMatlabCode/SplineMatlabCode/`: older parallel branch/snapshot of spline experiments retained for reference.
 - `Project Proposal/`: original scope document and project report PDF.
 - `PapersResearch/`: literature tracking notes and references.
-- `DataForReport/`: placeholder folder for curated report assets (currently minimal).
+- `DataForReport/`: curated figures for writeups (`figures/`), draft reports, **`figures/heightPmetAnalysisFigures/FINDINGS_AND_NEXT_STEPS.md`** (summary stats).
 - `MiscMatlabCode/`: archived comparison material and external/reference model files.
 
 ## Where To Start

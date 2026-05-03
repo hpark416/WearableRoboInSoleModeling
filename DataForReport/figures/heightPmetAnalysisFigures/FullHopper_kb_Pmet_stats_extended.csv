@@ -1,0 +1,6 @@
+predictor,n_valid,r_pearson,p_pearson,r_spearman
+amplitude_res,135,0.887461,1.40528e-46,0.884242
+max_GRF,135,-0.42842,2.17546e-07,-0.651223
+max_abs_ddpdt,135,0.912214,2.18006e-53,0.905011
+max_abs_dGRFdt,135,0.897229,4.6763e-49,0.886192
+muscle_mean_abs,135,0.896386,7.82226e-49,0.895416

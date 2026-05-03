@@ -82,6 +82,13 @@ sig = [];
 try
     if isstruct(simout) && isfield(simout, name)
         sig = simout.(name);
+        return
+    end
+
+    % Common case: signal is inside logsout Dataset
+    if isstruct(simout) && isfield(simout, 'logsout')
+        sig = from_logsout(simout.logsout, name);
+        if ~isempty(sig), return; end
     elseif isa(simout, 'Simulink.SimulationOutput')
         wh = simout.who;
         if iscell(wh)
@@ -91,12 +98,39 @@ try
         end
         if hit
             sig = simout.get(name);
+            return
+        end
+
+        % If not top-level, look in logsout Dataset by element name
+        if any(strcmp(string(wh), "logsout"))
+            logsout = simout.get('logsout');
+            sig = from_logsout(logsout, name);
+            if ~isempty(sig), return; end
         end
     end
 catch
     sig = [];
 end
 
+end
+
+
+function sig = from_logsout(logsout, name)
+sig = [];
+try
+    if isa(logsout, 'Simulink.SimulationData.Dataset')
+        elt = logsout.getElement(name);
+        if ~isempty(elt)
+            if isprop(elt, 'Values')
+                sig = elt.Values;
+            else
+                sig = elt;
+            end
+        end
+    end
+catch
+    sig = [];
+end
 end
 
 
