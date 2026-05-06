@@ -1,5 +1,6 @@
 %% Script that runs Bayesian Optimization with spline
 clc; close all; clear
+addpath(genpath('./helpers'))
 
 %% get baselines first
 gen_baseline_data(true) % Saves baseline to file. Jump height constrained.
