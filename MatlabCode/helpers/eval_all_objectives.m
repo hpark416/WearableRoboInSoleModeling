@@ -58,7 +58,7 @@ end
 function [amplitude, max_GRF, max_dpMass, mean_Pmet] =  search_amplitude(...
     des_max_dpMass, model_name, material_params, amplitude_range, ...
     varargin)
-    % threshold is +-0.0005
+    % threshold is +-0.001
     % do not use parallelization as the main function is in parfor
 
     if isempty(varargin) % initialize

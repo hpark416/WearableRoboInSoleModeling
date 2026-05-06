@@ -35,7 +35,7 @@ Treat generated data as reproducible output that can be rebuilt by rerunning scr
 ## Typical Run Order
 
 1. Sweeps: `helpers/gen_sweep_data.m` (see `sweep_walkthrough.m` or your walkthrough).
-2. Figures: `helpers/visualization/gen_sweep_colormaps.m`; fixed-height / Pareto / BO comparison scripts in repo root (`plot_fixed_height_Pmet_analysis.m`, etc.).
+2. Figures: `helpers/visualization/gen_sweep_colormaps.m`; fixed-height / Pareto / BO comparison scripts in subfolder (`misc_plot_scripts/plot_fixed_height_Pmet_analysis.m`, etc.).
 3. BO: `bayesian_optimization_spline.m`.
 
 ## Dependencies

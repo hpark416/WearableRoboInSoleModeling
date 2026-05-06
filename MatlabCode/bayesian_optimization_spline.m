@@ -1,8 +1,12 @@
 %% Script that runs Bayesian Optimization with spline
 clc; close all; clear
 
+%% get baselines first
+gen_baseline_data(true) % Saves baseline to file. Jump height constrained.
+baselines = load("generated_data/height_0.06_baseline_objectives.mat");
+
 %% Choose objective here — change this line to switch objectives
-% Options: @eval_minimize_GRF, @eval_minimize_Pmet, @eval_normalized_weighted
+% run one subsection for one objective; one BO process takes a lot of time
 objective_fn = @eval_minimize_GRF;
 objective_name = 'GRF'; % change to 'Pmet' or 'Normalized' to match above
 
@@ -15,9 +19,20 @@ objective_name = 'Pmet';
 run_force_disp_BO(objective_fn, objective_name)
 
 %%
-objective_fn = @eval_normalized_weighted;
+objective_fn = @(model_name, params) eval_normalized_weighted(...
+model_name, params, baselines.max_GRF, baselines.mean_Pmet);
 objective_name = 'Normalized';
 
+run_force_disp_BO(objective_fn, objective_name)
+
+%%
+objective_fn = @eval_maximize_height;
+objective_name = 'MaxHeight';
+run_force_disp_BO(objective_fn, objective_name)
+
+%%
+objective_fn = @eval_pmet_per_height;
+objective_name = 'PmetPerHeight';
 run_force_disp_BO(objective_fn, objective_name)
 
 
@@ -67,7 +82,8 @@ results = bayesopt(@(params)objective_fn(model_name, params),...
     'UseParallel', true,...
     'MaxObjectiveEvaluations', 30,...
     'XConstraintFcn',@(params)profile_constraints(...
-    params,max_endpoint,K_shoes_interval));
+    params,max_endpoint,K_shoes_interval),...
+    'NumCoupledConstraints',1);
 
 
 %% Save optimal parameters for use in other scripts
@@ -106,35 +122,54 @@ end
 
 
 %% Objective functions
-% [objective, constraints]
-function max_GRF = eval_minimize_GRF(model_name, params)
-    ctrl_points_params = to_control_points(params);
-    [mat_params.force_table, mat_params.disp_table] = ...
-                                generate_lookup(ctrl_points_params);
-    [max_GRF, ~, ~, ~] = ...
-        eval_all_objectives(model_name, mat_params, [0.8, 1.0], 0.04);
-end
+%% constrained jump height
+function [max_GRF, constraint] = eval_minimize_GRF(model_name, params)
 
-function mean_Pmet = eval_minimize_Pmet(model_name, params)
-    ctrl_points_params = to_control_points(params);
-    [mat_params.force_table, mat_params.disp_table] = ...
-                                generate_lookup(ctrl_points_params);
-    [~, ~, mean_Pmet, ~] = ...
-        eval_all_objectives(model_name, mat_params, [0.8, 1.0], 0.04);
-end
-
-function objective = eval_normalized_weighted(model_name, params)
-    ctrl_points_params = to_control_points(params);
-    [mat_params.force_table, mat_params.disp_table] = ...
-                                generate_lookup(ctrl_points_params);
-    [max_GRF, ~, mean_Pmet, ~] = ...
-        eval_all_objectives(model_name, mat_params, [0.8, 1.0], 0.04);
+    [max_GRF, max_dpMass, ~, ~] = eval_bo_params(model_name, params);
+    constraint = 1- 2*is_height_satisfied(max_dpMass);
     
-    % hard coded; better if we pass them in
-    GRF_baseline  = 1371.1;
-    Pmet_baseline = 162.895;
+end
+
+function [mean_Pmet, constraint] = eval_minimize_Pmet(model_name, params)
+    [~, max_dpMass, mean_Pmet, ~] = eval_bo_params(model_name, params);
+    constraint = 1- 2*is_height_satisfied(max_dpMass);
+end
+
+function [objective, constraint] = eval_normalized_weighted(...
+    model_name, params, GRF_baseline, Pmet_baseline)
+    [max_GRF, max_dpMass, mean_Pmet, ~] = eval_bo_params(model_name, params);
+    
+    % GRF_baseline  = 1371.1;
+    % Pmet_baseline = 162.895;
 
     objective = (max_GRF / GRF_baseline) + (mean_Pmet / Pmet_baseline);
+    
+    constraint = 1- 2*is_height_satisfied(max_dpMass);
+end
+
+%% free jump
+function [objective,constraint] = eval_maximize_height(model_name, params)
+    ctrl_points_params = to_control_points(params);
+    [mat_params.force_table, mat_params.disp_table] = ...
+                                generate_lookup(ctrl_points_params);
+    [~, max_dpMass, ~, ~] = ...
+        eval_all_objectives(model_name, mat_params, 1.0);
+    
+    % negate because bayesopt minimizes
+    objective = -max_dpMass;
+    constraint = -1; % always true
+end
+
+function [objective,constraint] = eval_pmet_per_height(model_name, params)
+    ctrl_points_params = to_control_points(params);
+    [mat_params.force_table, mat_params.disp_table] = ...
+                                generate_lookup(ctrl_points_params);
+    [~, max_dpMass, mean_Pmet, ~] = ...
+        eval_all_objectives(model_name, mat_params, 1.0);
+    
+    % minimize metabolic cost per unit of jump height
+    objective = mean_Pmet / max_dpMass;
+    constraint = -1; % always true
 end
 
 %% Constraints
@@ -152,5 +187,24 @@ function satisfied = profile_constraints(params, max_endpoint, K_shoes_interval)
                             (overall_k <= K_shoes_interval(2));
 
     satisfied = is_endpoint_feasible & is_overall_k_feasible;
+
+end
+
+%% boilerplate
+function [max_GRF, max_dpMass, mean_Pmet, amplitude_res] = ...
+    eval_bo_params(model_name, params)
+    ctrl_points_params = to_control_points(params);
+    [max_GRF, max_dpMass, mean_Pmet, amplitude_res] = ...
+    eval_control_points(model_name, ctrl_points_params);
+end
+
+function satisfied = is_height_satisfied(max_dpMass)
+
+if abs(max_dpMass - 0.06) < 0.001
+    satisfied = true;
+else
+    satisfied = false;
+end
+
 
 end

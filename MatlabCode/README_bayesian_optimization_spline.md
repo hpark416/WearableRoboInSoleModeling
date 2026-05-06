@@ -180,7 +180,7 @@ After each `bayesopt` run:
 
 | File | Role |
 |------|------|
-| [`plot_BO_spline_profiles_comparison.m`](plot_BO_spline_profiles_comparison.m) | One figure: BO splines vs linear reference curves. |
+| [`misc_plot_scripts/plot_BO_spline_profiles_comparison.m`](plot_BO_spline_profiles_comparison.m) | One figure: BO splines vs linear reference curves. |
 | [`helpers/eval_all_objectives.m`](helpers/eval_all_objectives.m) | Simulates and returns objectives; fixed-height mode used here. |
 | [`helpers/README_eval_all_objectives.md`](helpers/README_eval_all_objectives.md) | Deep dive on objectives and amplitude search. |
 | [`helpers/generate_lookup.m`](helpers/generate_lookup.m) | Builds PCHIP-based `force_table` / `disp_table` from control points. |

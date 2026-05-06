@@ -1,0 +1,9 @@
+% nonlinear profile boilerplate; for consistency.
+function [max_GRF, max_dpMass, mean_Pmet, amplitude_res] = ...
+    eval_control_points(model_name, ctrl_points_params)
+
+    [mat_params.force_table, mat_params.disp_table] = ...
+                                generate_lookup(ctrl_points_params);
+    [max_GRF, max_dpMass, mean_Pmet, amplitude_res] = ...
+        eval_all_objectives(model_name, mat_params, [0.8, 1.0], 0.06);
+end
