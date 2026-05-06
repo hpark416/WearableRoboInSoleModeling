@@ -2,6 +2,12 @@
 
 This is the primary MATLAB/Simulink workspace for the wearable insole modeling project.
 
+## TLDR
+
+Follow the blocks in `sweep_walkthrough.m` to sweep through the linear model and plot the results, then follow `bayesian_optimization_spline.m` to optimize the nonlinear profile - though this functions and relevant files need to be renamed, as we are not using splines for parameterization anymore.
+
+It is **HIGHLY RECOMMENDED that you NOT run the entire script, instead you should run each subsection**, as each sweep/evaluation is time-consuming.
+
 ## What Is In This Folder
 
 - `models/`: current Simulink models (`FullHopper_baseline.slx`, `FullHopper_k.slx`, `FullHopper_kb.slx`, `FullHopper_kb_splines.slx`).
